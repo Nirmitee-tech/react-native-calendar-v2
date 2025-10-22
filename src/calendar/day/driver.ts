@@ -1,5 +1,5 @@
-import {render, fireEvent} from '@testing-library/react-native';
-import {extractStyles} from '../../testUtils';
+import { render, fireEvent } from '@testing-library/react-native';
+import { extractStyles } from '../../testUtils';
 
 export class DayDriver {
   testID: string;
@@ -26,7 +26,8 @@ export class DayDriver {
 
   getAccessibilityLabel() {
     const node = this.renderTree.getByTestId(this.testID);
-    return node?.props?.accessibilityLabel.trim();
+    const label = node?.props?.accessibilityLabel;
+    return label && typeof label === 'string' ? label.trim() : '';
   }
 
   tap() {

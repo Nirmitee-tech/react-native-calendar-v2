@@ -1,5 +1,5 @@
 const XDate = require('xdate');
-const {toMarkingFormat} = require('./interface');
+const { toMarkingFormat } = require('./interface');
 
 const latinNumbersPattern = /[0-9]/g;
 
@@ -33,7 +33,7 @@ export function onSameDateRange({
   secondDay: string;
   numberOfDays: number;
   firstDateInRange: string;
-}){
+}) {
   const aDate = new XDate(firstDay);
   const bDate = new XDate(secondDay);
   const firstDayDate = new XDate(firstDateInRange);
@@ -117,7 +117,17 @@ export function month(date: XDate) { // exported for tests only
 }
 
 export function weekDayNames(firstDayOfWeek = 0) {
-  let weekDaysNames = getLocale().dayNamesShort;
+  const locale = getLocale();
+  let weekDaysNames = locale?.dayNamesShort;
+
+  // Fallback to default English day names if locale is not available or dayNamesShort is not an array
+  if (!weekDaysNames || !Array.isArray(weekDaysNames)) {
+    weekDaysNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  }
+
+  // Ensure all day names are strings
+  weekDaysNames = weekDaysNames.map(day => String(day || ''));
+
   const dayShift = firstDayOfWeek % 7;
   if (dayShift) {
     weekDaysNames = weekDaysNames.slice(dayShift).concat(weekDaysNames.slice(0, dayShift));
@@ -219,5 +229,18 @@ export function generateDay(originDate: string | XDate, daysOffset = 0) {
 }
 
 export function getLocale() {
-  return XDate.locales[XDate.defaultLocale];
+  const locale = XDate.locales[XDate.defaultLocale];
+
+  // Return a default locale object if the locale is not available
+  if (!locale) {
+    return {
+      dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      numbers: null
+    };
+  }
+
+  return locale;
 }

@@ -1,0 +1,33 @@
+import { render, fireEvent } from '@testing-library/react-native';
+import { extractStyles } from '../../testUtils';
+export class DayDriver {
+    testID;
+    element;
+    renderTree;
+    constructor(element, testID) {
+        this.element = element;
+        this.renderTree = render(element);
+        this.testID = testID || element.props.testID;
+    }
+    getStyle() {
+        return extractStyles(this.renderTree.getByTestId(this.testID));
+    }
+    getDayText() {
+        return this.renderTree.getByTestId(`${this.testID}.text`).children.join('');
+    }
+    getTextStyle() {
+        return extractStyles(this.renderTree.getByTestId(`${this.testID}.text`));
+    }
+    getAccessibilityLabel() {
+        const node = this.renderTree.getByTestId(this.testID);
+        const label = node?.props?.accessibilityLabel;
+        return label && typeof label === 'string' ? label.trim() : '';
+    }
+    tap() {
+        const node = this.renderTree.getByTestId(this.testID);
+        if (!node) {
+            throw new Error('Day not found.');
+        }
+        fireEvent.press(node);
+    }
+}
