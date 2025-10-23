@@ -20,16 +20,16 @@ const TimelineHours = (props) => {
                 timeText = '';
             }
             else if (i < 12) {
-                timeText = !format24h ? `${i} AM` : `${i}:00`;
+                timeText = !format24h ? `${i} AM` : `${i.toString().padStart(2, '0')}:00`;
             }
             else if (i === 12) {
-                timeText = !format24h ? `${i} PM` : `${i}:00`;
+                timeText = !format24h ? `${i} PM` : `${i.toString().padStart(2, '0')}:00`;
             }
             else if (i === 24) {
                 timeText = !format24h ? '12 AM' : '23:59';
             }
             else {
-                timeText = !format24h ? `${i - 12} PM` : `${i}:00`;
+                timeText = !format24h ? `${i - 12} PM` : `${i.toString().padStart(2, '0')}:00`;
             }
             return { timeText, time: i };
         });
@@ -52,26 +52,26 @@ const TimelineHours = (props) => {
         }
     }, [onBackgroundLongPressOut, date]);
     return (<>
-      <TouchableWithoutFeedback onLongPress={handleBackgroundPress} onPressOut={handlePressOut}>
-        <View style={StyleSheet.absoluteFillObject}/>
-      </TouchableWithoutFeedback>
-      {unavailableHoursBlocks.map((block, index) => (<View key={index} style={[
-                styles.unavailableHoursBlock,
-                block,
-                unavailableHoursColor ? { backgroundColor: unavailableHoursColor } : undefined,
-                { left: timelineLeftInset }
-            ]}/>))}
+        <TouchableWithoutFeedback onLongPress={handleBackgroundPress} onPressOut={handlePressOut}>
+            <View style={StyleSheet.absoluteFillObject} />
+        </TouchableWithoutFeedback>
+        {unavailableHoursBlocks.map((block, index) => (<View key={index} style={[
+            styles.unavailableHoursBlock,
+            block,
+            unavailableHoursColor ? { backgroundColor: unavailableHoursColor } : undefined,
+            { left: timelineLeftInset }
+        ]} />))}
 
-      {hours.map(({ timeText, time }, index) => {
+        {hours.map(({ timeText, time }, index) => {
             return (<React.Fragment key={time}>
-            <Text key={`timeLabel${time}`} style={[styles.timeLabel, { top: offset * index - 6, width: timelineLeftInset - 16 }]}>
-              {timeText}
-            </Text>
-            {time === start ? null : (<View key={`line${time}`} testID={`${testID}.${time}.line`} style={[styles.line, { top: offset * index, width: dimensionWidth - EVENT_DIFF, left: timelineLeftInset - 16 }]}/>)}
-            {<View key={`lineHalf${time}`} testID={`${testID}.${time}.lineHalf`} style={[styles.line, { top: offset * (index + 0.5), width: dimensionWidth - EVENT_DIFF, left: timelineLeftInset - 16 }]}/>}
-          </React.Fragment>);
+                <Text key={`timeLabel${time}`} style={[styles.timeLabel, { top: offset * index - 6, width: timelineLeftInset - 16 }]}>
+                    {timeText}
+                </Text>
+                {time === start ? null : (<View key={`line${time}`} testID={`${testID}.${time}.line`} style={[styles.line, { top: offset * index, width: dimensionWidth - EVENT_DIFF, left: timelineLeftInset - 16 }]} />)}
+                {<View key={`lineHalf${time}`} testID={`${testID}.${time}.lineHalf`} style={[styles.line, { top: offset * (index + 0.5), width: dimensionWidth - EVENT_DIFF, left: timelineLeftInset - 16 }]} />}
+            </React.Fragment>);
         })}
-      {times(numberOfDays, (index) => <View key={index} style={[styles.verticalLine, { right: (index + 1) * width / numberOfDays }]}/>)}
+        {times(numberOfDays, (index) => <View key={index} style={[styles.verticalLine, { right: (index + 1) * width / numberOfDays }]} />)}
     </>);
 };
 export default React.memo(TimelineHours);
