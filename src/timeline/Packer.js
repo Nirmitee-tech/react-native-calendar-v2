@@ -91,6 +91,27 @@ export function populateEvents(_events, populateOptions) {
     if (columns.length > 0) {
         packOverlappingEventGroup(columns, calculatedEvents, populateOptions);
     }
+    const mainEventWidthMap = {};
+calculatedEvents.forEach(event => {
+    if (event.uid && !event.uid.includes('-before') && !event.uid.includes('-after')) {
+        mainEventWidthMap[event.uid] = {
+            width: event.width,
+            left: event.left
+        };
+    }
+});
+
+calculatedEvents.forEach(event => {
+    if (event.uid && (event.uid.includes('-before') || event.uid.includes('-after'))) {
+        const mainUid = event.uid.replace(/-before$|-after$/, '');
+        const mainEventData = mainEventWidthMap[mainUid];
+        
+        if (mainEventData) {
+            event.width = mainEventData.width;
+            event.left = mainEventData.left;
+        }
+    }
+});
     return calculatedEvents;
 }
 export function buildUnavailableHoursBlocks(unavailableHours = [], options) {

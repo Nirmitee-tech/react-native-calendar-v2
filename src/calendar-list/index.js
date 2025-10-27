@@ -179,7 +179,7 @@ const CalendarList = (props, ref) => {
     };
     /** Viewable month */
     const viewabilityConfig = useRef({
-        viewAreaCoveragePercentThreshold: 20
+        viewAreaCoveragePercentThreshold: 50
     });
     const onViewableItemsChanged = useCallback(({ viewableItems }) => {
         const newVisibleMonth = parseDate(viewableItems[0]?.item);

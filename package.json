@@ -1,6 +1,6 @@
 {
-  "name": "nirmitee-react-native-calendars",
-  "version": "1.22.3",
+  "name": "react-native-calendars-schedulify",
+  "version": "1.22.4",
   "main": "src/index.ts",
   "types": "src/index.d.ts",
   "description": "React Native Calendar Components",
