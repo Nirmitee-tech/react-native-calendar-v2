@@ -8,10 +8,26 @@ function buildEvent(event, left, width, { dayStart = 0, hourBlockHeight = HOUR_B
     const startTime = new XDate(event.start);
     const endTime = event.end ? new XDate(event.end) : new XDate(startTime).addHours(1);
     const dayStartTime = new XDate(startTime).clearTime();
+    
+    // Calculate original height
+    const calculatedHeight = startTime.diffHours(endTime) * hourBlockHeight;
+    
+    const MINIMUM_HEIGHT = 20;
+    let finalHeight = Math.max(calculatedHeight, MINIMUM_HEIGHT);
+    
+    // Calculate original top position
+    let finalTop = (dayStartTime.diffHours(startTime) - dayStart) * hourBlockHeight;
+    
+    // For "-before" events, grow upwards by adjusting top position
+    if (event.uid && event.uid.includes('-before') && calculatedHeight < MINIMUM_HEIGHT) {
+        const heightDiff = MINIMUM_HEIGHT - calculatedHeight;
+        finalTop = finalTop - heightDiff;
+    }
+    
     return {
         ...event,
-        top: (dayStartTime.diffHours(startTime) - dayStart) * hourBlockHeight,
-        height: startTime.diffHours(endTime) * hourBlockHeight,
+        top: finalTop,
+        height: finalHeight,
         width,
         left
     };
